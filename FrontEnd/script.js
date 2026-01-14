@@ -1,3 +1,67 @@
+console.log("token =", localStorage.getItem("token"));
+console.log("document.body =", document.body);
+
+
+const token = localStorage.getItem("token");
+console.log(token)
+
+if (token) {
+    document.body.classList.add("connected");
+
+    const editBanner = document.createElement("div");
+    editBanner.classList.add("edit-banner");
+
+    const img = document.createElement("img");
+    img.src = "./assets/icons/vector.png";
+    img.alt = "Icon modifier";
+
+    const span = document.createElement("span");
+    span.textContent = "Mode édition";
+
+    editBanner.appendChild(img);
+    editBanner.appendChild(span);
+
+    document.body.prepend(editBanner);
+
+    const loginLink = document.querySelector(`a[href="login.html"]`);
+    loginLink.textContent = "logout";
+
+    loginLink.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.href = "index.html";
+    })
+
+    const filters = document.querySelector(".filters");
+    filters.remove();
+
+    const projectTitle = document.querySelector("#project");
+
+    const projectHeader = document.createElement("div");
+    projectHeader.classList.add("modify-project");
+
+    projectTitle.parentNode.insertBefore(projectHeader, projectTitle);
+    projectHeader.appendChild(projectTitle);
+
+    const modifyContainer = document.createElement("span");
+    modifyContainer.classList.add("modify");
+
+    const imgModify = document.createElement("img");
+    imgModify.src = "./assets/icons/vector-2.png";
+    imgModify.alt = "Icon modifier";
+
+    const spanModify = document.createElement("span");
+    spanModify.textContent = "modifier";
+
+    modifyContainer.appendChild(imgModify);
+    modifyContainer.appendChild(spanModify);
+
+
+    projectHeader.appendChild(modifyContainer)
+
+}
+
+
+
 let works
 
 async function getWorks() {
