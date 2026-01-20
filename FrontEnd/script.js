@@ -39,6 +39,10 @@ function displayGallery(works) {
 async function initGallery() {
     works = await getWorks();
     displayGallery(works);
+
+    if (token) {
+        displayGalleryModal(works);
+    }
 }
 
 initGallery();

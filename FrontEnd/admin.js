@@ -66,17 +66,6 @@ function createModifyProject() {
 
 }
 
-
-function activateEditMode() {
-    document.body.classList.add("connected");
-
-    createEditBanner();
-    setupLogoutLink();
-    removeFilters();
-    createModifyProject();
-    displayGalleryModal(works);
-}
-
 function displayGalleryModal(works) {
     const gallery = document.querySelector(".gallery-container");
     gallery.innerHTML = "";
@@ -104,13 +93,103 @@ function createFigureModal(work) {
     galleryItem.appendChild(trashIconContainer);
     trashIconContainer.appendChild(trashIcon);
 
+    galleryItem.dataset.id = work.id;
+
+
     return galleryItem;
 }
 
+function modalClose() {
+    const modals = document.querySelectorAll(".modal");
 
+    for (let currentIndex = 0; currentIndex < modals.length; currentIndex++) {
+        const modal = modals[currentIndex];
 
-if (token) {
-    activateEditMode();
+        modal.addEventListener("click", (event) => {
+
+            if (event.target === modal) {
+                window.location.hash = "";
+            }
+        });
+    }
 }
 
+async function deleteWork(id) {
+    try {
+        const response = await fetch(`http://localhost:5678/api/works/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
+        if (!response.ok) {
+            throw new Error("Erreur lors de la suppression");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Impossible de supprimer le projet :", error);
+        return false;
+    }
+}
+
+function setupTrash() {
+    const trashIcons = document.querySelectorAll(".trash");
+
+    for (let currentIndex = 0; currentIndex < trashIcons.length; currentIndex++) {
+        const trash = trashIcons[currentIndex];
+
+        trash.addEventListener("click", async (event) => {
+            event.stopPropagation();
+
+            const galleryItem = trash.parentNode;
+            const itemId = parseInt(galleryItem.dataset.id);
+
+            const success = await deleteWork(itemId);
+
+            if (success) {
+                galleryItem.remove();
+
+                for (let index = 0; index < works.length; index++) {
+                    if (works[index].id === itemId) {
+                        works.splice(index, 1);
+                        break;
+                    }
+                }
+            } else {
+                alert("Impossible de supprimer ce projet.");
+            }
+        });
+    }
+}
+
+function activateEditMode() {
+    document.body.classList.add("connected");
+
+    createEditBanner();
+    setupLogoutLink();
+    removeFilters();
+    createModifyProject();
+    setupTrash();
+
+    if (typeof works !== "undefined") {
+        displayGalleryModal(works);
+        setupTrash();
+    }
+}
+
+async function initAdmin() {
+    works = await getWorks();
+    if (token) {
+        activateEditMode();
+        modalClose();
+
+        const form = document.querySelector('.modal-add-photo');
+        form.addEventListener('submit', addProject);
+
+        setupCategories();
+    }
+}
+
+initAdmin();
