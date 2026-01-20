@@ -363,3 +363,225 @@ footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 }
+
+.modal-toggle {
+	display: none;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: #0000004D;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal:target {
+	display: flex;
+}
+
+.modal-content {
+	position: relative;
+	background-color: white;
+	border-radius: 10px;
+	width: 630px;
+	height: 688px;
+	max-width: 630px;
+	position: relative;
+}
+
+.modal h2 {
+	color: black;
+	font-size: 26px;
+	display: flex;
+	justify-content: center;
+	margin-top: 60px;
+	font-family: 'Work Sans';
+	font-weight: 400;
+}
+
+.close {
+	position: absolute;
+	top: 26px;
+	right: 30px;
+	cursor: pointer;
+}
+
+.gallery-item {
+	position: relative;
+}
+
+.gallery-item img {
+	width: 76px;
+	margin-bottom: 20px;
+}
+
+.fa-trash-can {
+	width: 17px;
+	height: 17px;
+	color: white;
+	font-size: 10px;
+
+}
+
+.trash {
+	position: absolute;
+	top: 6px;
+	right: 5px;
+	cursor: pointer;
+	background-color: black;
+	border-radius: 2px;
+}
+
+.trash i {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.gallery-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin-top: 46px;
+	margin-left: 105px;
+	margin-right: 105px;
+	gap: 9px;
+}
+
+.modal-gallery hr {
+	width: 420px;
+	margin-top: 67.3px;
+}
+
+.add-photo-btn {
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 14px;
+	color: white;
+	border: none;
+	background-color: #1D6154;
+	width: 237px;
+	height: 36px;
+	border-radius: 60px;
+	margin-top: 31px;
+	text-decoration: none;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+}
+
+.button-photo {
+	display: flex;
+	justify-content: center;
+}
+
+.arrow {
+	position: absolute;
+	margin-top: 26px;
+	margin-left: 30px;
+}
+
+.modal-add-photo {
+	display: flex;
+	align-content: center;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+
+.add-photo {
+	background-color: #E8F1F6;
+	margin-top: 36px;
+	margin-bottom: 30px;
+	width: 420px;
+	height: 169px;
+	border-radius: 3px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.image {
+	margin-top: 22.5px;
+}
+
+.photo-add {
+	background-color: #CBD6DC;
+	color: #306685;
+	border-radius: 50px;
+	margin-top: 12.88px;
+	width: 173px;
+	height: 36px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.format {
+	margin-top: 7px;
+	font-size: 10px;
+}
+
+
+#title {
+	display: flex;
+	margin-top: 10px;
+	margin-bottom: 21px;
+	width: 420px;
+	height: 51px;
+	border: none;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+
+select {
+	display: flex;
+	margin-top: 10px;
+	width: 420px;
+	height: 51px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+
+#category {
+	-webkit-appearance: none;
+	appearance: none;
+	background-image: url('/assets/icons/chevron.png');
+	background-repeat: no-repeat;
+	background-position: right 19.82px center;
+	width: 420px;
+	height: 51px;
+	border: none;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+
+.modal-add-photo hr {
+	width: 420px;
+	margin-top: 47px;
+}
+
+.validation {
+	background-color: #A7A7A7;
+	color: white;
+	font-family: 'Syne';
+	font-size: 14px;
+	border-radius: 60px;
+	border: none;
+	margin-top: 32px;
+	width: 237px;
+	height: 36px;
+	cursor: pointer;
+
+}
+
+.button-validation {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
