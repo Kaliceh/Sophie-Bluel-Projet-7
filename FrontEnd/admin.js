@@ -44,25 +44,23 @@ function removeFilters() {
 
 
 function createModifyProject() {
-    const projectTitle = document.querySelector("#project");
     const modalLink = document.querySelector(".modal-link");
 
-    if (!projectTitle || !modalLink) return;
+    if (!modalLink) return;
 
-    const modifyContainer = document.createElement("span");
-    modifyContainer.classList.add("modify");
+    const modifyLink = document.createElement("a");
+    modifyLink.href = "#modal-gallery";
+    modifyLink.classList.add("modify");
 
-    const imgModify = document.createElement("img");
-    imgModify.src = "./assets/icons/vector-2.png";
-    imgModify.alt = "Icon modifier";
+    const icon = document.createElement("i");
+    icon.classList.add("fa-regular", "fa-pen-to-square");
 
-    const spanModify = document.createElement("span");
-    spanModify.textContent = "modifier";
+    const text = document.createElement("span");
+    text.textContent = "modifier";
 
-    modifyContainer.appendChild(imgModify);
-    modifyContainer.appendChild(spanModify);
-
-    modalLink.appendChild(modifyContainer);
+    modifyLink.appendChild(icon);
+    modifyLink.appendChild(text);
+    modalLink.appendChild(modifyLink);
 
 }
 
@@ -108,6 +106,7 @@ function modalClose() {
         modal.addEventListener("click", (event) => {
 
             if (event.target === modal) {
+                resetAddPhotoForm();
                 window.location.hash = "";
             }
         });
@@ -179,11 +178,15 @@ function activateEditMode() {
     }
 }
 
+
 async function initAdmin() {
     works = await getWorks();
     if (token) {
         activateEditMode();
         modalClose();
+        setupImagePreview();
+        setupCloseButtons();
+        setupCloseArrow();
 
         const form = document.querySelector('.modal-add-photo');
         form.addEventListener('submit', addProject);
@@ -193,3 +196,158 @@ async function initAdmin() {
 }
 
 initAdmin();
+
+function setupImagePreview() {
+    const fileInput = document.querySelector(".photo-add input");
+    const addPhotoDiv = document.querySelector(".add-photo")
+    const imgPreview = addPhotoDiv.querySelector("img.image");
+
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            imgPreview.src = event.target.result;
+            addPhotoDiv.classList.add("image-loaded");
+        }
+
+        reader.readAsDataURL(file);
+    });
+}
+
+function validateForm(title, category, image) {
+    if (!title || !category || !image) {
+        alert("Veuillez remplir tous les champs et ajouter une image");
+        return false;
+    }
+    return true;
+}
+
+function createFormData(title, category, file) {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("image", file);
+    return formData;
+}
+
+async function sendProjectToAPI(formData) {
+    try {
+        const response = await fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'envoi du projet");
+        }
+
+        const newProject = await response.json();
+        return newProject;
+    } catch (error) {
+        console.error(error);
+        alert("Impossible d'ajouter ce projet.");
+        return null;
+    }
+}
+
+function addProjectToGallery(newProject) {
+    const gallery = document.querySelector(".gallery");
+    const figure = document.createElement("figure");
+    const img = document.createElement("img");
+    const caption = document.createElement("figcaption");
+
+    img.src = newProject.imageUrl;
+    img.alt = newProject.title;
+    caption.textContent = newProject.title;
+
+    figure.appendChild(img);
+    figure.appendChild(caption);
+    gallery.appendChild(figure);
+}
+
+async function addProject(event) {
+    event.preventDefault();
+
+    const title = document.getElementById("title").value.trim();
+    const category = document.getElementById("category").value;
+    const fileInput = document.querySelector(".photo-add input");
+    const file = fileInput.files[0];
+
+    if (!validateForm(title, category, file)) return;
+
+    const formData = createFormData(title, category, file);
+    const newProject = await sendProjectToAPI(formData);
+
+    if (newProject) {
+        works.push(newProject);
+        addProjectToGallery(newProject);
+        displayGalleryModal(works);
+        setupTrash();
+        resetAddPhotoForm();
+        window.location.hash = "";
+        alert("Projet ajouté avec succès !");
+    }
+}
+
+async function getCategories() {
+    try {
+        const response = await fetch("http://localhost:5678/api/categories");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Erreur récupération catégories :", error);
+        return [];
+    }
+}
+
+async function setupCategories() {
+    const select = document.getElementById("category");
+    const categories = await getCategories();
+
+    for (let currentIndex = 0; currentIndex < categories.length; currentIndex++) {
+        const option = document.createElement("option");
+        option.value = categories[currentIndex].id;
+        option.textContent = categories[currentIndex].name;
+        select.appendChild(option);
+    }
+}
+
+function resetAddPhotoForm() {
+    const form = document.querySelector(".modal-add-photo");
+    const fileInput = document.querySelector(".photo-add input");
+    const imgPreview = document.querySelector(".add-photo img.image");
+    const addPhotoDiv = document.querySelector(".add-photo");
+
+    form.reset();
+
+    imgPreview.src = "/assets/icons/image.png";
+    fileInput.value = "";
+    addPhotoDiv.classList.remove("image-loaded");
+}
+
+function setupCloseButtons() {
+    const closeButtons = document.querySelectorAll(".close");
+
+    for (let currentIndex = 0; currentIndex < closeButtons.length; currentIndex++) {
+        closeButtons[currentIndex].addEventListener("click", () => {
+            resetAddPhotoForm();
+            window.location.hash = "";
+        });
+    }
+}
+
+function setupCloseArrow() {
+    const arrows = document.querySelectorAll(".arrow");
+
+    for (let currentIndex = 0; currentIndex < arrows.length; currentIndex++) {
+        arrows[currentIndex].addEventListener("click", () => {
+            resetAddPhotoForm();
+            window.location.hash = "";
+        });
+    }
+}
