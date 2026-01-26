@@ -21,6 +21,8 @@ function createFigure(work) {
     const figCaption = document.createElement("figCaption");
     figCaption.textContent = work.title;
 
+    figure.dataset.id = work.id;
+
     figure.appendChild(img);
     figure.appendChild(figCaption);
 

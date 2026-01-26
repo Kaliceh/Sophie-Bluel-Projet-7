@@ -86,6 +86,17 @@ function createFigureModal(work) {
     const trashIcon = document.createElement("i");
     trashIconContainer.classList.add("trash");
     trashIcon.classList.add("fa-solid", "fa-trash-can");
+    trashIcon.addEventListener("click", async () => {
+        const success = await deleteWork(work.id);
+        if (success) {
+            document.querySelector('.gallery-container [data-id="' + work.id + '"]').remove();
+            document.querySelector('.gallery [data-id="' + work.id + '"]').remove();
+
+        } else {
+            alert("Impossible de supprimer ce projet.");
+        }
+    });
+
 
     galleryItem.appendChild(img);
     galleryItem.appendChild(trashIconContainer);
@@ -257,16 +268,7 @@ async function sendProjectToAPI(formData) {
 
 function addProjectToGallery(newProject) {
     const gallery = document.querySelector(".gallery");
-    const figure = document.createElement("figure");
-    const img = document.createElement("img");
-    const caption = document.createElement("figcaption");
-
-    img.src = newProject.imageUrl;
-    img.alt = newProject.title;
-    caption.textContent = newProject.title;
-
-    figure.appendChild(img);
-    figure.appendChild(caption);
+    const figure = createFigure(newProject);
     gallery.appendChild(figure);
 }
 
