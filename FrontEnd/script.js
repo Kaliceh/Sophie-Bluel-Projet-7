@@ -18,7 +18,7 @@ function createFigure(work) {
     img.src = work.imageUrl;
     img.alt = work.title;
 
-    const figCaption = document.createElement("figCaption");
+    const figCaption = document.createElement("figcaption");
     figCaption.textContent = work.title;
 
     figure.dataset.id = work.id;

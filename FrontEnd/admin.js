@@ -196,6 +196,18 @@ async function initAdmin() {
         activateEditMode();
         modalClose();
         setupImagePreview();
+
+        document.getElementById("title").addEventListener("input", checkForm);
+        document.getElementById("category").addEventListener("change", checkForm);
+
+        function checkForm() {
+            validateForm(
+                document.getElementById("title").value.trim(),
+                document.getElementById("category").value,
+                document.querySelector(".photo-add input").files[0]
+            );
+
+        }
         setupCloseButtons();
         setupCloseArrow();
 
@@ -221,18 +233,30 @@ function setupImagePreview() {
         reader.onload = function (event) {
             imgPreview.src = event.target.result;
             addPhotoDiv.classList.add("image-loaded");
+
+            validateForm(
+                document.getElementById("title").value.trim(),
+                document.getElementById("category").value,
+                file
+            );
+
         }
 
         reader.readAsDataURL(file);
+
     });
 }
 
 function validateForm(title, category, image) {
-    if (!title || !category || !image) {
-        alert("Veuillez remplir tous les champs et ajouter une image");
-        return false;
+    const submitBtn = document.querySelector(".validation");
+
+    if (title && category && image) {
+        submitBtn.classList.add("active");
+        return true;
     }
-    return true;
+
+    submitBtn.classList.remove("active");
+    return false;
 }
 
 function createFormData(title, category, file) {
@@ -280,7 +304,10 @@ async function addProject(event) {
     const fileInput = document.querySelector(".photo-add input");
     const file = fileInput.files[0];
 
-    if (!validateForm(title, category, file)) return;
+    if (!validateForm(title, category, file)) {
+        alert("Veuillez remplir tous les champs et ajouter une image");
+        return;
+    }
 
     const formData = createFormData(title, category, file);
     const newProject = await sendProjectToAPI(formData);
@@ -330,6 +357,9 @@ function resetAddPhotoForm() {
     imgPreview.src = "/assets/icons/image.png";
     fileInput.value = "";
     addPhotoDiv.classList.remove("image-loaded");
+
+    document.querySelector(".validation").classList.remove("active");
+
 }
 
 function setupCloseButtons() {

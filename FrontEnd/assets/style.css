@@ -624,3 +624,7 @@ select {
 	justify-content: center;
 	align-items: center;
 }
+
+.validation.active {
+	background-color: #1D6154;
+}
